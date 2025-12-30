@@ -90,17 +90,26 @@
 </head>
 <body>
 
-    <div id="reg-screen">
-        <div class="reg-card">
-            <h2 class="text-info mb-4">EVA X PRO</h2>
-            <button class="btn btn-outline-info w-100 mb-4 py-2" onclick="document.getElementById('pfp').click()">📷 SUBIR FOTO OBLIGATORIA</button>
-            <input type="file" id="pfp" hidden accept="image/*" onchange="previewPfp(this)">
-            <img id="pfp-pre" style="width:80px; height:80px; border-radius:50%; margin-bottom:15px; display:none; object-fit:cover;">
-            
-            <input type="text" id="rName" class="form-control bg-dark text-white mb-2 py-3" placeholder="Tu Nombre">
-            <input type="text" id="rLast" class="form-control bg-dark text-white mb-4 py-3" placeholder="Tu Apellido">
-            <button class="btn btn-success w-100 py-3 fs-3 fw-bold" onclick="enterApp()">ENTRAR AL SISTEMA</button>
+    <div id="reg-screen" style="position:fixed; inset:0; background:#0b141a; z-index:99999; display:flex; align-items:center; justify-content:center; width:100vw; height:100dvh;">
+        <div class="reg-card" style="background:#111b21; padding:30px; border-radius:25px; width:92%; max-width:450px; border:2px solid #00ffcc; text-align:center; overflow-y:auto; max-height:95dvh;">
+            <h2 style="color:#00ffcc; margin-bottom:20px;">REGISTRO EVA X</h2>
+            <button onclick="document.getElementById("pfp-file").click()" style="width:100%; padding:15px; background:#202c33; color:white; border:1px dashed #00ffcc; border-radius:10px; margin-bottom:15px;">📷 SUBIR FOTO PERFIL</button>
+            <input type="file" id="pfp-file" hidden accept="image/*">
+            <div style="text-align:left; margin-bottom:10px;">
+                <label style="color:#8696a0; font-size:0.9rem;">NOMBRE Y APELLIDO:</label>
+                <input type="text" id="reg-n" placeholder="Tu identidad..." style="width:100%; padding:12px; border-radius:10px; border:none; background:#2a3942; color:white;">
+            </div>
+            <div style="text-align:left; margin-bottom:10px;">
+                <label style="color:#8696a0; font-size:0.9rem;">PAÍS:</label>
+                <input type="text" id="reg-p" placeholder="Ej: Venezuela" style="width:100%; padding:12px; border-radius:10px; border:none; background:#2a3942; color:white;">
+            </div>
+            <div style="text-align:left; margin-bottom:20px;">
+                <label style="color:#8696a0; font-size:0.9rem;">CIUDAD:</label>
+                <input type="text" id="reg-c" placeholder="Ej: Caracas" style="width:100%; padding:12px; border-radius:10px; border:none; background:#2a3942; color:white;">
+            </div>
+            <button onclick="verificarEntrada()" style="width:100%; padding:18px; background:#25d366; color:white; border:none; border-radius:15px; font-size:1.3rem; font-weight:bold;">INGRESAR</button>
         </div>
+    </div>
     </div>
 
     <div id="app-shell" class="app-shell">
