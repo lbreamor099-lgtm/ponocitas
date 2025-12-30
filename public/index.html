@@ -2,130 +2,232 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>EVA X PRO - SISTEMA SUPREMO</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        :root { --wa-bg: #0b141a; --header: #111b21; --accent: #00ffcc; --btn-size: 3.8rem; }
+        :root { --wa-bg: #0b141a; --header: #111b21; --accent: #00ffcc; --msg-me: #005c4b; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; background: var(--wa-bg); color: white; height: 100dvh; width: 100vw; overflow: hidden; font-size: 18px; }
+        body, html { 
+            margin: 0; padding: 0; background: var(--wa-bg); color: white; 
+            height: 100dvh; width: 100vw; overflow: hidden; font-family: sans-serif;
+        }
 
-        /* Pantalla de Registro con Etiquetas Grandes */
-        #reg-screen { position: fixed; inset: 0; background: var(--wa-bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 25px; }
-        .reg-card { background: var(--header); padding: 35px; border-radius: 25px; width: 100%; max-width: 450px; border: 2px solid #222e35; text-align: center; }
-        label { display: block; text-align: left; color: var(--accent); font-weight: bold; margin-bottom: 8px; font-size: 1.2rem; }
+        /* --- PANTALLA DE REGISTRO (ADUANA) --- */
+        #reg-screen { 
+            position: fixed; inset: 0; background: var(--wa-bg); z-index: 10000; 
+            display: flex; align-items: center; justify-content: center; padding: 20px; 
+        }
+        .reg-card { 
+            background: var(--header); padding: 30px; border-radius: 25px; 
+            width: 100%; max-width: 450px; border: 2px solid #333; text-align: center; 
+        }
 
-        /* App Principal - Layout Forzado */
+        /* --- LAYOUT PRINCIPAL (DIMENSIONES) --- */
         .app-shell { display: none; height: 100dvh; flex-direction: column; width: 100%; }
         .app-shell.active { display: flex; }
 
-        /* Cabecera con Logo Gigante y Descarga */
-        .header-pro { background: var(--header); padding: 18px 25px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #222e35; }
-        #logo-main { width: 75px; height: 75px; border-radius: 50%; border: 4px solid var(--accent); background: #202c33; cursor: pointer; }
-        .download-btn { background: #25d366; color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: bold; font-size: 1.1rem; }
+        /* --- HEADER CON LOGO GIGANTE --- */
+        .main-header { 
+            background: var(--header); padding: 15px 20px; display: flex; 
+            align-items: center; border-bottom: 2px solid #222e35; 
+        }
+        #logo-trigger { 
+            width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--accent); 
+            background: #202c33; cursor: pointer; pointer-events: auto;
+        }
+        .dl-btn { background: #25d366; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; margin-left: auto; }
 
-        /* Áreas de Contenido (Tabs) */
-        .tab-content { flex: 1; overflow-y: auto; padding: 25px; display: none; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcd03b6.png'); background-blend-mode: overlay; }
-        .tab-content.active { display: block; }
-        .msg-box { background: #202c33; padding: 15px; border-radius: 15px; margin-bottom: 15px; border-left: 5px solid var(--accent); font-size: 1.1rem; }
+        /* --- CANALES LIVE TV (ARRIBA HORIZONTAL) --- */
+        .tv-row { 
+            display: flex; gap: 15px; padding: 15px; overflow-x: auto; 
+            background: #000; border-bottom: 1px solid var(--accent); 
+        }
+        .tv-chan { 
+            min-width: 110px; height: 110px; background: #222; border-radius: 15px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px solid #444; position: relative;
+        }
+        .tv-chan.on { border-color: red; box-shadow: 0 0 10px red; }
+        .tv-chan img { width: 100%; height: 100%; border-radius: 13px; object-fit: cover; display: none; }
+        .tv-chan.on img { display: block; }
+        .tv-chan.on i { display: none; }
+        .status-tag { position: absolute; bottom: 5px; font-size: 10px; font-weight: bold; color: #aaa; }
+        .tv-chan.on .status-tag { color: red; }
 
-        /* Navegación Inferior - ICONOS XL */
-        .nav-bar-xl { background: var(--header); display: flex; justify-content: space-around; padding: 15px 0; border-top: 2px solid #222e35; min-height: 100px; }
+        /* --- AREA DE CHAT Y LISTAS --- */
+        .content-body { flex: 1; overflow-y: auto; position: relative; background-size: cover; }
+        .view { display: none; height: 100%; padding: 15px; }
+        .view.active { display: block; }
+
+        /* --- BARRA DE ESCRITURA (PARA TECLADO) --- */
+        .write-bar { 
+            background: var(--header); padding: 12px 15px; display: flex; 
+            align-items: center; gap: 10px; border-top: 1px solid #222e35;
+        }
+        .write-bar input { 
+            flex: 1; background: #2a3942; border: none; color: white; 
+            padding: 14px 20px; border-radius: 30px; font-size: 18px; outline: none;
+        }
+
+        /* --- NAVEGACIÓN INFERIOR XL --- */
+        .nav-xl { 
+            background: var(--header); display: flex; justify-content: space-around; 
+            padding: 10px 0; border-top: 1px solid #222e35; height: 95px;
+        }
         .nav-item { text-align: center; color: #8696a0; flex: 1; cursor: pointer; }
-        .nav-item i { font-size: var(--btn-size); display: block; margin-bottom: 5px; }
+        .nav-item i { font-size: 3rem; display: block; }
         .nav-item.active { color: var(--accent); }
 
-        /* Panel de Jefe Blindado */
-        #boss-ui { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: none; padding: 40px; }
-        .btn-boss-xl { width: 100%; padding: 25px; font-size: 1.5rem; margin-bottom: 20px; border-radius: 20px; font-weight: bold; }
+        /* --- PANEL DE JEFE --- */
+        #boss-panel { 
+            position: fixed; inset: 0; background: #000; z-index: 20000; 
+            display: none; padding: 30px; overflow-y: auto;
+        }
+        .btn-boss { width: 100%; padding: 20px; margin-bottom: 15px; border-radius: 15px; font-size: 1.4rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="reg-screen">
         <div class="reg-card">
-            <h1 class="text-info mb-4">EVA X PRO</h1>
-            <button class="btn btn-primary w-100 py-3 mb-4 fs-4" onclick="document.getElementById('pfp').click()">📷 SUBIR FOTO OBLIGATORIA</button>
-            <input type="file" id="pfp" hidden accept="image/*">
+            <h2 class="text-info mb-4">EVA X PRO</h2>
+            <button class="btn btn-outline-info w-100 mb-4 py-2" onclick="document.getElementById('pfp').click()">📷 SUBIR FOTO OBLIGATORIA</button>
+            <input type="file" id="pfp" hidden accept="image/*" onchange="previewPfp(this)">
+            <img id="pfp-pre" style="width:80px; height:80px; border-radius:50%; margin-bottom:15px; display:none; object-fit:cover;">
             
-            <label>Escriba su Nombre:</label>
-            <input type="text" id="rName" class="form-control form-control-lg bg-dark text-white mb-3 py-3 fs-4">
-            
-            <label>Escriba su Apellido:</label>
-            <input type="text" id="rLast" class="form-control form-control-lg bg-dark text-white mb-5 py-3 fs-4">
-            
-            <button class="btn btn-success w-100 py-4 fs-3 fw-bold" onclick="launchApp()">ACCEDER AL GRUPO</button>
+            <input type="text" id="rName" class="form-control bg-dark text-white mb-2 py-3" placeholder="Tu Nombre">
+            <input type="text" id="rLast" class="form-control bg-dark text-white mb-4 py-3" placeholder="Tu Apellido">
+            <button class="btn btn-success w-100 py-3 fs-3 fw-bold" onclick="enterApp()">ENTRAR AL SISTEMA</button>
         </div>
     </div>
 
     <div id="app-shell" class="app-shell">
-        <div class="header-pro">
-            <img id="logo-main" src="https://via.placeholder.com/75" 
-                 onpointerdown="startBoss()" onpointerup="stopBoss()" onpointerleave="stopBoss()">
-            <div class="flex-grow-1 ms-4">
-                <h3 class="m-0">EVA X PRO</h3>
-                <span class="text-success fw-bold" id="id-tag">Conectando...</span>
+        <div class="main-header">
+            <img id="logo-trigger" src="https://via.placeholder.com/70" oncontextmenu="return false;" ontouchstart="hStart()" ontouchend="hEnd()">
+            <div class="ms-3">
+                <b class="fs-4">EVA X PRO</b><br>
+                <small class="text-success" id="user-display">#ID</small>
             </div>
-            <button class="download-btn" onclick="alert('Descargando App Oficial...')">📥 APP</button>
+            <button class="dl-btn" onclick="alert('Descargando...')">📥 APP</button>
         </div>
 
-        <div id="tab-group" class="tab-content active">
-            <div class="msg-box">🛡️ Grupo Protegido: Bienvenido al chat general.</div>
+        <div class="tv-row">
+            <div class="tv-chan" id="tv1" onclick="watchLive(1)">
+                <i class="bi bi-tv fs-1"></i>
+                <img id="img-tv1" src="">
+                <span class="status-tag">CANAL 1</span>
+            </div>
+            <div class="tv-chan" id="tv2" onclick="watchLive(2)">
+                <i class="bi bi-tv fs-1"></i>
+                <img id="img-tv2" src="">
+                <span class="status-tag">CANAL 2</span>
+            </div>
+            <div class="tv-chan" id="tv3" onclick="watchLive(3)">
+                <i class="bi bi-tv fs-1"></i>
+                <img id="img-tv3" src="">
+                <span class="status-tag">CANAL 3</span>
+            </div>
         </div>
 
-        <div id="tab-private" class="tab-content">
-            <div class="msg-box">🔒 Mensajería Privada 1 a 1 activada.</div>
+        <div class="content-body" id="bg-master">
+            <div id="v-group" class="view active">
+                <div class="alert alert-dark">Bienvenido al grupo general.</div>
+            </div>
+
+            <div id="v-contacts" class="view">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-arrow-left fs-1 me-3" onclick="goBack()"></i>
+                    <h3>Agenda de Contactos</h3>
+                </div>
+                <div class="list-group">
+                    <button class="list-group-item list-group-item-action bg-dark text-white border-secondary p-3" onclick="requestChat('Admin')">
+                        <i class="bi bi-person-circle me-2"></i> Admin #0
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <div id="tab-live" class="tab-content">
-            <h2 class="text-info mb-4">CANALES LIVE EN VIVO</h2>
-            <button class="btn btn-outline-info w-100 py-4 mb-3 fs-3">📺 CANAL 1 - GRUPAL</button>
-            <button class="btn btn-outline-primary w-100 py-4 mb-3 fs-3">🎙️ CANAL 2 - ENTREVISTA</button>
-            <button class="btn btn-outline-warning w-100 py-4 fs-3">👁️ CANAL 3 - VIGILANCIA</button>
+        <div class="write-bar" id="w-bar">
+            <i class="bi bi-plus-lg fs-2 text-info"></i>
+            <input type="text" placeholder="Escribe aquí..." id="mInput">
+            <i class="bi bi-send-fill fs-2 text-info" onclick="alert('Mensaje enviado')"></i>
         </div>
 
-        <div class="nav-bar-xl">
-            <div class="nav-item active" id="n-group" onclick="switchTab('group')"><i class="bi bi-people-fill"></i>GRUPO</div>
-            <div class="nav-item" id="n-private" onclick="switchTab('private')"><i class="bi bi-chat-left-dots-fill"></i>PRIVADOS</div>
-            <div class="nav-item" id="n-live" onclick="switchTab('live')"><i class="bi bi-broadcast-pin"></i>LIVE</div>
+        <div class="nav-xl">
+            <div class="nav-item active" onclick="showV('group', this)"><i class="bi bi-people-fill"></i>Grupo</div>
+            <div class="nav-item" onclick="showV('contacts', this)"><i class="bi bi-person-lines-fill"></i>Privados</div>
+            <div class="nav-item" onclick="alert('Buscador Gaia activo')"><i class="bi bi-search"></i>Gaia</div>
         </div>
     </div>
 
-    <div id="boss-ui">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <h1 class="text-danger display-3">MANDO JEFE</h1>
-            <button class="btn btn-light btn-lg" onclick="closeBoss()">SALIR</button>
+    <div id="boss-panel">
+        <div class="d-flex justify-content-between mb-4">
+            <h1 class="text-danger">MANDO SUPREMO</h1>
+            <button class="btn btn-light" onclick="hClose()">X</button>
         </div>
-        <button class="btn btn-info btn-boss-xl" onclick="alert('Buscador Gaia: Seleccione Usuario')">🔍 BUSCADOR GAIA</button>
-        <button class="btn btn-primary btn-boss-xl" onclick="document.getElementById('logo-in').click()">🖼️ CAMBIAR LOGO / FONDO</button>
-        <input type="file" id="logo-in" hidden onchange="updateLogo(this)">
-        <button class="btn btn-danger btn-boss-xl" onclick="location.reload()">🔥 LIMPIEZA TOTAL</button>
+        <button class="btn btn-info btn-boss" onclick="document.getElementById('logo-in').click()">🖼️ CAMBIAR LOGO APP</button>
+        <input type="file" id="logo-in" hidden onchange="upLogo(this)">
+        
+        <button class="btn btn-primary btn-boss" onclick="document.getElementById('bg-in').click()">🌄 CAMBIAR FONDO GRUPO</button>
+        <input type="file" id="bg-in" hidden onchange="upBg(this)">
+
+        <hr class="bg-white">
+        <h5>CONTROL TV (ON/OFF)</h5>
+        <button class="btn btn-outline-danger btn-boss" onclick="toggleTV(1)">SUBIR A CANAL 1</button>
+        <button class="btn btn-outline-danger btn-boss" onclick="toggleTV(2)">SUBIR A CANAL 2</button>
+        <button class="btn btn-danger btn-boss" onclick="location.reload()">REINICIAR TODO</button>
     </div>
 
     <script>
-        let bTimer;
-
-        function launchApp() {
+        let hTimer;
+        function previewPfp(i){ if(i.files[0]){ let r=new FileReader(); r.onload=e=>{document.getElementById('pfp-pre').src=e.target.result; document.getElementById('pfp-pre').style.display='block';}; r.readAsDataURL(i.files[0]);}}
+        
+        function enterApp() {
             let n = document.getElementById('rName').value, p = document.getElementById('pfp').files[0];
-            if(!n || !p) return alert("¡ALTO! Nombre y Foto son obligatorios.");
-            let id = Math.floor(Math.random() * 1500);
-            document.getElementById('id-tag').innerText = n + " #ID:" + (id > 1000 ? 'K'+(id-1000) : id);
+            if(!n || !p) return alert("Nombre y Foto obligatorios");
+            document.getElementById('user-display').innerText = n + " #1";
             document.getElementById('reg-screen').style.display = 'none';
             document.getElementById('app-shell').classList.add('active');
         }
 
-        function switchTab(name) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('tab-' + name).classList.add('active');
-            document.getElementById('n-' + name).classList.add('active');
+        function showV(v, el) {
+            document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+            document.getElementById('v-' + v).classList.add('active');
+            if(el) el.classList.add('active');
         }
 
-        function startBoss() { bTimer = setTimeout(() => { if(prompt("LLAVE MAESTRA:") === "jefe123") document.getElementById('boss-ui').style.display='block'; }, 3000); }
-        function stopBoss() { clearTimeout(bTimer); }
-        function closeBoss() { document.getElementById('boss-ui').style.display='none'; }
-        function updateLogo(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>document.getElementById('logo-main').src=e.target.result; r.readAsDataURL(i.files[0]); } }
+        function goBack() { showV('group'); document.querySelector('.nav-item').classList.add('active'); }
+
+        function requestChat(user) {
+            if(confirm("¿Enviar solicitud de chat privado a " + user + "?")) {
+                alert("Esperando que " + user + " acepte tu solicitud...");
+            }
+        }
+
+        // GESTO JEFE
+        function hStart() { hTimer = setTimeout(() => { if(prompt("LLAVE:")==="jefe123") document.getElementById('boss-panel').style.display='block'; }, 3000); }
+        function hEnd() { clearTimeout(hTimer); }
+        function hClose() { document.getElementById('boss-panel').style.display='none'; }
+
+        // LOGICA TV
+        function toggleTV(id) {
+            let c = document.getElementById('tv' + id);
+            c.classList.toggle('on');
+            let img = document.getElementById('img-tv' + id);
+            img.src = document.getElementById('pfp-pre').src;
+        }
+
+        function watchLive(id) {
+            let c = document.getElementById('tv' + id);
+            if(c.classList.contains('on')) alert("Entrando al Live... (Cámara y Comentarios activos)");
+            else alert("Canal Apagado");
+        }
+
+        function upLogo(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>document.getElementById('logo-trigger').src=e.target.result; r.readAsDataURL(i.files[0]); } }
+        function upBg(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>document.getElementById('bg-master').style.backgroundImage="url('"+e.target.result+"')"; r.readAsDataURL(i.files[0]); } }
     </script>
 </body>
 </html>
