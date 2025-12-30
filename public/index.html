@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi App VIP Live</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <div class="live-channels">
+            <div class="vip-slot" id="vip1">
+                <span>VIP 1 - Esperando...</span>
+                <video id="video1" autoplay playsinline></video>
+            </div>
+            <div class="vip-slot" id="vip2">
+                <span>VIP 2 - Esperando...</span>
+                <video id="video2" autoplay playsinline></video>
+            </div>
+        </div>
+
+        <div id="chat-box">
+            <div id="messages"></div>
+        </div>
+
+        <div class="controls">
+            <button id="btn-back">⬅ Volver</button>
+            <input type="text" id="input-msg" placeholder="Escribe un mensaje...">
+            <button id="btn-send">Enviar</button>
+        </div>
+
+        <button id="btn-download" style="display:none;">Descargar App</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
