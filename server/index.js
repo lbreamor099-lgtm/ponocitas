@@ -7,26 +7,57 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, { cors: { origin: "*" } });
 
-// Carpeta de archivos públicos (donde estará tu index.html)
+// Variables de estado del Jefe
+let salaAbierta = true;
+let usuariosPendientes = [];
+let usuariosAprobados = new Set();
+let canalesLive = [null, null, null, null];
+let musicaActual = { url: '', estado: 'stop', volumen: 0.5 };
+let imagenEncabezado = "https://via.placeholder.com/800x200?text=Bienvenido+a+Eva";
+
 app.use(express.static('public'));
 
-// Lógica del Chat para miles de personas
 io.on('connection', (socket) => {
-    console.log('Nuevo usuario conectado');
+    // Contador de personas
+    io.emit('contador', io.engine.clientsCount);
+
+    // Registro de usuario
+    socket.on('registro', (datos) => {
+        usuariosPendientes.push({ id: socket.id, ...datos });
+        io.emit('notificacion_jefe', { tipo: 'aprobacion_pendiente', lista: usuariosPendientes });
+    });
+
+    // Control de Jefe: Aprobar Usuario
+    socket.on('aprobar_usuario', (id) => {
+        usuariosAprobados.add(id);
+        io.to(id).emit('aprobado_confirmado');
+        usuariosPendientes = usuariosPendientes.filter(u => u.id !== id);
+    });
+
+    // Control de Jefe: Música y Canales
+    socket.on('comando_jefe', (cmd) => {
+        if (cmd.tipo === 'musica') {
+            musicaActual = cmd.data;
+            io.emit('actualizar_musica', musicaActual);
+        }
+        if (cmd.tipo === 'cerrar_sala') {
+            salaAbierta = cmd.estado;
+            io.emit('estado_sala', salaAbierta);
+        }
+    });
 
     socket.on('mensaje', (data) => {
-        // Esto envía el mensaje a TODAS las personas conectadas al mismo tiempo
-        io.emit('mensaje', data);
+        if (salaAbierta || data.jefe) {
+            io.emit('mensaje', data);
+        }
     });
 
     socket.on('disconnect', () => {
-        console.log('Usuario desconectado');
+        io.emit('contador', io.engine.clientsCount);
     });
 });
 
 const PORT = process.env.PORT || 3000;
-httpServer.listen(PORT, () => {
-    console.log(`Servidor tecnológico corriendo en puerto ${PORT}`);
-});
+httpServer.listen(PORT, () => console.log("Servidor Eva x Activo en puerto " + PORT));
