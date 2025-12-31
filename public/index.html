@@ -2,169 +2,180 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Eva x - Oficial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Eva x - Blindado</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        :root { --wa-header: #075e54; --wa-bg: #efe7de; --wa-teal: #128c7e; --msg-in: #ffffff; --msg-out: #e1ffc7; --neon: #00ffcc; }
-        body, html { margin: 0; padding: 0; height: 100dvh; width: 100vw; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #000; }
+        :root { --lila-dark: #4a148c; --lila-mid: #7b1fa2; --lila-light: #e1bee7; --bg-chat: #f3e5f5; }
+        body, html { margin: 0; padding: 0; height: 100dvh; width: 100vw; font-family: sans-serif; overflow: hidden; background: #000; }
         
-        /* REGISTRO */
-        #reg-screen { position: fixed; inset: 0; background: #111b21; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .reg-card { background: #202c33; padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 1px solid var(--neon); }
-        .input-wa { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #2a3942; color: white; margin-bottom: 15px; outline: none; }
+        /* REGISTRO BLINDADO */
+        #reg-screen { position: fixed; inset: 0; background: #1a0033; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .reg-card { background: #310062; padding: 30px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; border: 2px solid #ce93d8; }
+        .input-lila { width: 100%; padding: 12px; border-radius: 10px; border: none; background: #4a148c; color: white; margin-bottom: 15px; outline: none; }
 
-        /* INTERFAZ WHATSAPP */
-        #app-shell { display: none; height: 100dvh; flex-direction: column; background: var(--wa-bg); }
+        /* INTERFAZ LILA */
+        #app-shell { display: none; height: 100dvh; flex-direction: column; background: var(--bg-chat); }
         #app-shell.active { display: flex; }
         
-        header { background: var(--wa-header); color: white; padding: 10px 15px; display: flex; align-items: center; position: relative; z-index: 10; }
-        .header-info { flex: 1; margin-left: 10px; cursor: pointer; }
-        .header-info b { display: block; font-size: 1.1rem; }
-        .header-info span { font-size: 0.85rem; opacity: 0.9; }
-
+        header { background: var(--lila-dark); color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        
         /* CANALES LIVE */
-        .live-bar { display: flex; background: #fff; padding: 10px; gap: 15px; overflow-x: auto; border-bottom: 1px solid #ddd; }
-        .ch-box { min-width: 75px; text-align: center; position: relative; }
-        .ch-img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #ccc; object-fit: cover; }
-        .status-dot { position: absolute; bottom: 18px; right: 10px; width: 14px; height: 14px; background: #bbb; border-radius: 50%; border: 2px solid #fff; }
-        .status-dot.on { background: #25d366; box-shadow: 0 0 5px #25d366; }
+        .live-bar { display: flex; background: #fff; padding: 10px; gap: 15px; overflow-x: auto; border-bottom: 2px solid var(--lila-light); }
+        .ch-box { min-width: 70px; text-align: center; position: relative; }
+        .ch-img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--lila-light); object-fit: cover; transition: 0.3s; }
+        .dot { position: absolute; bottom: 18px; right: 8px; width: 14px; height: 14px; background: #ccc; border-radius: 50%; border: 2px solid #fff; }
+        .dot.on { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
 
-        /* CHAT */
-        .chat-container { flex: 1; overflow-y: auto; padding: 15px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; display: flex; flex-direction: column; }
-        .bubble { max-width: 85%; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.95rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); color: #000; }
-        .bubble.in { background: var(--msg-in); align-self: flex-start; border-top-left-radius: 0; }
-        .bubble.out { background: var(--msg-out); align-self: flex-end; border-top-right-radius: 0; }
+        /* CHAT SALA */
+        .chat-area { flex: 1; overflow-y: auto; padding: 15px; background-image: url("https://i.pinimg.com/originals/ab/ab/60/abab60f03939610940549488a0715330.png"); background-blend-mode: overlay; background-color: #f3e5f5; display: flex; flex-direction: column; }
+        .msg { max-width: 80%; padding: 10px 15px; border-radius: 15px; margin-bottom: 10px; font-size: 0.95rem; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .msg.in { background: #fff; align-self: flex-start; border-bottom-left-radius: 0; color: #333; }
+        .msg.out { background: #d1c4e9; align-self: flex-end; border-bottom-right-radius: 0; color: #4a148c; }
 
-        /* FOOTER */
-        .wa-footer { background: #f0f0f0; padding: 8px 12px; display: flex; align-items: center; gap: 10px; }
-        .input-pill { background: #fff; flex: 1; border-radius: 25px; padding: 8px 15px; display: flex; align-items: center; }
-        .input-pill input { border: none; flex: 1; outline: none; }
+        /* FOOTER LILA */
+        .wa-footer { background: #f3e5f5; padding: 10px; display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--lila-light); }
+        .input-pill { background: #fff; flex: 1; border-radius: 25px; padding: 8px 15px; display: flex; align-items: center; border: 1px solid var(--lila-light); }
+        .input-pill input { border: none; flex: 1; outline: none; background: transparent; }
+        .btn-send { width: 45px; height: 45px; background: var(--lila-dark); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
 
-        /* MANDO GAIA */
-        #boss-panel { position: fixed; inset: 0; background: #0b141a; z-index: 100000; display: none; padding: 20px; overflow-y: auto; color: white; }
-        .boss-card { background: #111b21; border: 1px solid var(--neon); border-radius: 15px; padding: 15px; margin-bottom: 20px; }
-        .vol-slider { width: 100%; accent-color: var(--neon); height: 20px; }
+        /* MANDO GAIA 🕹️ */
+        #boss-ui { position: fixed; inset: 0; background: #120024; z-index: 100000; display: none; padding: 25px; overflow-y: auto; color: white; }
+        .boss-card { background: #220044; border: 1px solid #ce93d8; border-radius: 15px; padding: 15px; margin-bottom: 20px; }
+        .vol-slider { width: 100%; accent-color: #ce93d8; }
     </style>
 </head>
 <body>
 
     <div id="reg-screen">
         <div class="reg-card">
-            <h2 style="color:var(--neon)">Eva x</h2>
-            <div id="pfp-p" style="width:100px;height:100px;border-radius:50%;border:2px dashed var(--neon);margin:20px auto;overflow:hidden;display:flex;align-items:center;justify-content:center;"><i class="bi bi-camera text-white fs-1"></i></div>
-            <button onclick="document.getElementById('pfp-f').click()" class="btn btn-outline-info w-100 mb-3">Foto Perfil</button>
-            <input type="file" id="pfp-f" hidden accept="image/*" onchange="preview(this)">
-            <input type="text" id="reg-n" class="input-wa" placeholder="Tu nombre...">
-            <button onclick="acceder()" class="btn btn-success w-100 fw-bold">ENTRAR</button>
+            <h1 style="color:#ce93d8">Eva x</h1>
+            <input type="text" id="user-n" class="input-lila" placeholder="Tu nombre o llave...">
+            <button onclick="checkAccess()" class="btn btn-info w-100 fw-bold">ENTRAR</button>
         </div>
     </div>
 
     <div id="app-shell">
         <header>
-            <i class="bi bi-arrow-left fs-4" onclick="location.reload()"></i>
-            <img id="g-logo" src="https://via.placeholder.com/40" style="width:40px;height:40px;border-radius:50%;margin-left:10px;">
-            <div class="header-info" onclick="alert('Info del grupo')">
-                <b>Eva x</b>
-                <span>48 personas en línea</span>
+            <div class="header-left">
+                <i class="bi bi-arrow-left fs-4" onclick="location.reload()"></i>
+                <img id="g-logo" src="https://via.placeholder.com/40/7b1fa2/ffffff?text=X" style="width:40px;height:40px;border-radius:50%; border: 2px solid white;">
+                <b class="ms-2">Eva x</b>
             </div>
-            <div id="boss-icon"></div>
-            <i class="bi bi-three-dots-vertical fs-4 ms-3"></i>
+            <div id="master-slot"></div>
+            <i class="bi bi-three-dots-vertical fs-4"></i>
         </header>
 
         <div class="live-bar">
-            <div class="ch-box" onclick="zoom(1)"><div class="status-dot" id="d1"></div><img id="c1" src="https://via.placeholder.com/60" class="ch-img"><br><small>Canal 1</small></div>
-            <div class="ch-box" onclick="zoom(2)"><div class="status-dot" id="d2"></div><img id="c2" src="https://via.placeholder.com/60" class="ch-img"><br><small>Canal 2</small></div>
-            <div class="ch-box" onclick="zoom(3)"><div class="status-dot" id="d3"></div><img id="c3" src="https://via.placeholder.com/60" class="ch-img"><br><small>Canal 3</small></div>
+            <div class="ch-box" onclick="zoom(1)"><div class="dot" id="d1"></div><img id="c1" src="https://via.placeholder.com/60/e1bee7/4a148c?text=C1" class="ch-img"><br><small>Canal 1</small></div>
+            <div class="ch-box" onclick="zoom(2)"><div class="dot" id="d2"></div><img id="c2" src="https://via.placeholder.com/60/e1bee7/4a148c?text=C2" class="ch-img"><br><small>Canal 2</small></div>
+            <div class="ch-box" onclick="zoom(3)"><div class="dot" id="d3"></div><img id="c3" src="https://via.placeholder.com/60/e1bee7/4a148c?text=C3" class="ch-img"><br><small>Canal 3</small></div>
         </div>
 
-        <div class="chat-container" id="box">
-            <div class="bubble in">¡Bienvenidos a Eva x! 👋</div>
+        <div class="chat-area" id="box">
+            <div class="msg in">Bienvenido al grupo Eva x 🟣</div>
         </div>
 
         <div class="wa-footer">
-            <i class="bi bi-emoji-smile fs-4 text-secondary"></i>
+            <i class="bi bi-emoji-smile fs-4 text-muted"></i>
             <div class="input-pill">
-                <input type="text" id="msg-i" placeholder="Mensaje">
-                <label><i class="bi bi-paperclip fs-4 text-secondary ms-2"></i><input type="file" hidden onchange="sendFile(this)"></label>
-                <i class="bi bi-camera-fill fs-4 text-secondary ms-2"></i>
+                <input type="text" id="msg-in" placeholder="Mensaje">
+                <label><i class="bi bi-paperclip fs-4 text-muted ms-2"></i><input type="file" hidden onchange="hAttach(this)"></label>
             </div>
-            <div class="btn btn-success rounded-circle" style="width:45px;height:45px;display:flex;align-items:center;justify-content:center;" onclick="send()">
-                <i class="bi bi-send-fill text-white"></i>
-            </div>
+            <button class="btn-send" onclick="hSend()"><i class="bi bi-send-fill"></i></button>
         </div>
     </div>
 
-    <div id="boss-panel">
+    <div id="boss-ui">
         <div class="d-flex justify-content-between mb-4">
-            <h2 class="text-info">MANDO GAIA 🕹️</h2>
-            <button class="btn btn-danger" onclick="document.getElementById('boss-panel').style.display='none'">CERRAR</button>
+            <h3 style="color:#ce93d8">MANDO GAIA 🕹️</h3>
+            <button class="btn btn-sm btn-danger" onclick="hBoss()">CERRAR</button>
         </div>
-
         <div class="boss-card">
-            <p>🎚️ CONTROL DE VOLUMEN MÚSICA</p>
-            <input type="range" class="vol-slider" min="0" max="1" step="0.1" value="0.5" oninput="changeVol(this.value)">
+            <p>👥 USUARIOS ONLINE: <span class="text-info">48</span></p>
+            <p>🎚️ VOLUMEN DE MÚSICA</p>
+            <input type="range" class="vol-slider" min="0" max="1" step="0.1" value="0.5" oninput="hVol(this.value)">
         </div>
-
         <div class="boss-card">
-            <p>🔍 BUSCADOR GAIA (FIJAR CANALES)</p>
-            <input type="text" id="s-val" class="input-wa" placeholder="Nombre de la persona...">
+            <p>🔍 BUSCADOR GAIA</p>
+            <input type="text" id="s-val" class="input-lila" placeholder="Nombre...">
             <div class="d-flex gap-2">
-                <button class="btn btn-primary btn-sm w-100" onclick="fijar(1)">CANAL 1</button>
-                <button class="btn btn-primary btn-sm w-100" onclick="fijar(2)">CANAL 2</button>
-                <button class="btn btn-primary btn-sm w-100" onclick="fijar(3)">CANAL 3</button>
+                <button class="btn btn-primary btn-sm w-100" onclick="hFijar(1)">FIJAR C1</button>
+                <button class="btn btn-primary btn-sm w-100" onclick="hFijar(2)">FIJAR C2</button>
             </div>
         </div>
-
         <div class="boss-card">
-            <p>⚙️ AJUSTES GRUPALES</p>
-            <label class="btn btn-outline-light w-100 mb-2">🖼️ FONDO CHAT<input type="file" hidden onchange="setBg(this)"></label>
-            <label class="btn btn-outline-light w-100 mb-2">💠 LOGO GRUPO<input type="file" hidden onchange="setLogo(this)"></label>
-            <label class="btn btn-outline-warning w-100 mb-2">🎵 LANZAR MÚSICA<input type="file" hidden accept="audio/*" onchange="playM(this)"></label>
-            <button class="btn btn-danger w-100 mt-2" onclick="alert('Limpiando grupo...')">EXPULSAR USUARIOS</button>
+            <p>⚙️ CONTROLES ELITE</p>
+            <label class="btn btn-outline-info w-100 mb-2">🎵 LANZAR MÚSICA<input type="file" hidden accept="audio/*" onchange="hMusic(this)"></label>
+            <label class="btn btn-outline-light w-100 mb-2">🖼️ FONDO CHAT<input type="file" hidden onchange="hBg(this)"></label>
+            <label class="btn btn-outline-light w-100">💠 LOGO GRUPO<input type="file" hidden onchange="hLogo(this)"></label>
         </div>
     </div>
 
     <script>
-        let isBoss = false, audioH = null;
-        function preview(i){ if(i.files[0]){ document.getElementById('pfp-p').innerHTML=`<img src="${URL.createObjectURL(i.files[0])}" style="width:100%;height:100%;object-fit:cover;">`; }}
-        
-        function acceder(){
-            let n = document.getElementById('reg-n').value;
-            if(n === "# 20937A."){ 
-                isBoss = true; 
-                document.getElementById('boss-icon').innerHTML = '<i class="bi bi-shield-lock-fill fs-4 ms-3" onclick="document.getElementById(\'boss-panel\').style.display=\'block\'"></i>';
+        let isJefe = false, player = null;
+
+        function checkAccess() {
+            let n = document.getElementById("user-n").value;
+            if(n === "# 20937A.") {
+                isJefe = true;
+                document.getElementById("master-slot").innerHTML = `<i class="bi bi-controller fs-4" onclick="hBoss()"></i>`;
             }
-            document.getElementById('reg-screen').style.display='none';
-            document.getElementById('app-shell').classList.add('active');
+            document.getElementById("reg-screen").style.display = "none";
+            document.getElementById("app-shell").classList.add("active");
         }
 
-        function send(){
-            let i=document.getElementById('msg-i'); if(!i.value)return;
-            document.getElementById('box').innerHTML += `<div class="bubble out">${i.value}</div>`;
-            i.value=""; document.getElementById('box').scrollTop = 99999;
+        function hBoss() { let ui = document.getElementById("boss-ui"); ui.style.display = (ui.style.display === "block") ? "none" : "block"; }
+
+        function hSend() {
+            let i = document.getElementById("msg-in"); if(!i.value) return;
+            document.getElementById("box").innerHTML += `<div class="msg out">${i.value}</div>`;
+            i.value = ""; document.getElementById("box").scrollTop = 99999;
         }
 
-        function sendFile(i){ if(i.files[0]){ let url=URL.createObjectURL(i.files[0]); document.getElementById('box').innerHTML += `<div class="bubble out"><img src="${url}" style="width:100%;border-radius:5px;"></div>`; }}
-        function setBg(i){ if(i.files[0]){ document.getElementById('box').style.backgroundImage=`url(${URL.createObjectURL(i.files[0])})`; }}
-        function setLogo(i){ if(i.files[0]){ document.getElementById('g-logo').src=URL.createObjectURL(i.files[0]); }}
-        
-        function playM(i){ if(i.files[0]){ audioH = new Audio(URL.createObjectURL(i.files[0])); audioH.play(); alert("Música lanzada."); }}
-        function changeVol(v){ if(audioH) audioH.volume = v; }
-
-        function fijar(c){
-            let v = document.getElementById('s-val').value; if(!v) return;
-            document.getElementById('c'+c).src = "https://via.placeholder.com/60/075e54/ffffff?text="+v;
-            document.getElementById('d'+c).classList.add('on');
-            alert(v + " fijado.");
+        function hAttach(f) {
+            if(f.files[0]) {
+                const r = new FileReader();
+                r.onload = (e) => {
+                    document.getElementById("box").innerHTML += `<div class="msg out"><img src="${e.target.result}" style="max-width:100%;border-radius:10px;"></div>`;
+                    document.getElementById("box").scrollTop = 99999;
+                };
+                r.readAsDataURL(f.files[0]);
+            }
         }
 
-        function zoom(c){
-            let src = document.getElementById('c'+c).src;
-            let o = document.createElement('div');
-            o.style = "position:fixed;inset:0;background:#000;z-index:999999;display:flex;align-items:center;justify-content:center;flex-direction:column;";
-            o.innerHTML = `<img src="${src}" style="width:80%;border-radius:20px;"><button class="btn btn-success mt-4" onclick="this.parentElement.remove()">VOLVER</button>`;
+        function hMusic(f) {
+            if(f.files[0]) {
+                if(player) player.pause();
+                const r = new FileReader();
+                r.onload = (e) => {
+                    player = new Audio(e.target.result);
+                    player.play();
+                    alert("Música activa para el grupo.");
+                };
+                r.readAsDataURL(f.files[0]);
+            }
+        }
+
+        function hVol(v) { if(player) player.volume = v; }
+        function hBg(f) { if(f.files[0]) { const r = new FileReader(); r.onload = (e) => { document.getElementById("box").style.backgroundImage = `url(${e.target.result})`; }; r.readAsDataURL(f.files[0]); } }
+        function hLogo(f) { if(f.files[0]) { const r = new FileReader(); r.onload = (e) => { document.getElementById("g-logo").src = e.target.result; }; r.readAsDataURL(f.files[0]); } }
+
+        function hFijar(c) {
+            let v = document.getElementById("s-val").value;
+            if(v) {
+                document.getElementById("c"+c).src = `https://via.placeholder.com/60/4a148c/ffffff?text=${v}`;
+                document.getElementById("d"+c).classList.add("on");
+            }
+        }
+
+        function zoom(c) {
+            let src = document.getElementById("c"+c).src;
+            let o = document.createElement("div");
+            o.style = "position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000000;display:flex;flex-direction:column;align-items:center;justify-content:center;";
+            o.innerHTML = `<img src="${src}" style="width:80%;border:4px solid white;border-radius:20px;"><button class="btn btn-light mt-4" onclick="this.parentElement.remove()">CERRAR</button>`;
             document.body.appendChild(o);
         }
     </script>
