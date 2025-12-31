@@ -3,181 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>EVA X PRO - ELITE</title>
+    <title>Eva x - Oficial</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        :root { --wa-dark: #0b141a; --wa-header: #111b21; --neon: #00ffcc; }
-        body, html { margin: 0; padding: 0; background: var(--wa-dark); color: white; height: 100dvh; width: 100vw; overflow: hidden; font-family: sans-serif; }
+        :root { --wa-header: #075e54; --wa-bg: #efe7de; --wa-teal: #128c7e; --msg-in: #ffffff; --msg-out: #e1ffc7; --neon: #00ffcc; }
+        body, html { margin: 0; padding: 0; height: 100dvh; width: 100vw; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #000; }
         
         /* REGISTRO */
-        #reg-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .reg-card { background: var(--wa-header); padding: 30px; border-radius: 25px; width: 90%; max-width: 400px; border: 1px solid var(--neon); text-align: center; }
-        .input-custom { width: 100%; padding: 12px; border-radius: 10px; border: none; background: #2a3942; color: white; margin-bottom: 15px; }
+        #reg-screen { position: fixed; inset: 0; background: #111b21; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .reg-card { background: #202c33; padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 1px solid var(--neon); }
+        .input-wa { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #2a3942; color: white; margin-bottom: 15px; outline: none; }
 
-        /* APP LAYOUT */
-        #app-shell { display: none; height: 100dvh; flex-direction: column; }
+        /* INTERFAZ WHATSAPP */
+        #app-shell { display: none; height: 100dvh; flex-direction: column; background: var(--wa-bg); }
         #app-shell.active { display: flex; }
         
+        header { background: var(--wa-header); color: white; padding: 10px 15px; display: flex; align-items: center; position: relative; z-index: 10; }
+        .header-info { flex: 1; margin-left: 10px; cursor: pointer; }
+        .header-info b { display: block; font-size: 1.1rem; }
+        .header-info span { font-size: 0.85rem; opacity: 0.9; }
+
         /* CANALES LIVE */
-        .live-header { display: flex; justify-content: space-around; background: var(--wa-header); padding: 10px; border-bottom: 1px solid #222e35; }
-        .channel-box { width: 80px; text-align: center; position: relative; cursor: pointer; }
-        .channel-img { width: 65px; height: 65px; border-radius: 15px; border: 2px solid #333; object-fit: cover; }
-        .dot { position: absolute; top: 5px; right: 12px; width: 12px; height: 12px; background: #444; border-radius: 50%; border: 2px solid var(--wa-header); }
-        .dot.online { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
+        .live-bar { display: flex; background: #fff; padding: 10px; gap: 15px; overflow-x: auto; border-bottom: 1px solid #ddd; }
+        .ch-box { min-width: 75px; text-align: center; position: relative; }
+        .ch-img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #ccc; object-fit: cover; }
+        .status-dot { position: absolute; bottom: 18px; right: 10px; width: 14px; height: 14px; background: #bbb; border-radius: 50%; border: 2px solid #fff; }
+        .status-dot.on { background: #25d366; box-shadow: 0 0 5px #25d366; }
 
-        /* CHAT WHATSAPP */
-        .chat-area { flex: 1; overflow-y: auto; padding: 15px; background-size: cover; background-position: center; display: flex; flex-direction: column; }
-        .msg { max-width: 85%; padding: 10px; border-radius: 12px; margin-bottom: 10px; background: #202c33; position: relative; }
-        .msg.me { align-self: flex-end; background: #005c4b; }
+        /* CHAT */
+        .chat-container { flex: 1; overflow-y: auto; padding: 15px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; display: flex; flex-direction: column; }
+        .bubble { max-width: 85%; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.95rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); color: #000; }
+        .bubble.in { background: var(--msg-in); align-self: flex-start; border-top-left-radius: 0; }
+        .bubble.out { background: var(--msg-out); align-self: flex-end; border-top-right-radius: 0; }
 
-        /* MANDO GAIA - SOLO JEFE */
-        #boss-ui { position: fixed; inset: 0; background: #000; z-index: 100000; display: none; padding: 25px; overflow-y: auto; }
-        .boss-card { background: #1a1a1a; border: 1px solid var(--neon); padding: 15px; border-radius: 15px; margin-bottom: 15px; }
-        .btn-boss { width: 100%; padding: 15px; border-radius: 10px; margin-bottom: 10px; font-weight: bold; border: 1px solid var(--neon); background: transparent; color: white; }
+        /* FOOTER */
+        .wa-footer { background: #f0f0f0; padding: 8px 12px; display: flex; align-items: center; gap: 10px; }
+        .input-pill { background: #fff; flex: 1; border-radius: 25px; padding: 8px 15px; display: flex; align-items: center; }
+        .input-pill input { border: none; flex: 1; outline: none; }
+
+        /* MANDO GAIA */
+        #boss-panel { position: fixed; inset: 0; background: #0b141a; z-index: 100000; display: none; padding: 20px; overflow-y: auto; color: white; }
+        .boss-card { background: #111b21; border: 1px solid var(--neon); border-radius: 15px; padding: 15px; margin-bottom: 20px; }
+        .vol-slider { width: 100%; accent-color: var(--neon); height: 20px; }
     </style>
 </head>
 <body>
 
     <div id="reg-screen">
         <div class="reg-card">
-            <h2 style="color:var(--neon)">EVA X PRO</h2>
-            <div id="pfp-preview" style="width:90px; height:90px; border-radius:50%; border:2px dashed var(--neon); margin:20px auto; overflow:hidden; display:flex; align-items:center; justify-content:center;">
-                <i class="bi bi-person-bounding-box fs-1"></i>
-            </div>
-            <button onclick="document.getElementById('pfp-input').click()" class="btn btn-outline-info w-100 mb-3">FOTO DE PERFIL</button>
-            <input type="file" id="pfp-input" hidden accept="image/*" onchange="previewImg(this, 'pfp-preview')">
-            <input type="text" id="reg-name" class="input-custom" placeholder="Nombre y Apellido">
-            <button onclick="validarEntrada()" class="btn btn-success w-100 py-3 fw-bold">ENTRAR AL SISTEMA</button>
+            <h2 style="color:var(--neon)">Eva x</h2>
+            <div id="pfp-p" style="width:100px;height:100px;border-radius:50%;border:2px dashed var(--neon);margin:20px auto;overflow:hidden;display:flex;align-items:center;justify-content:center;"><i class="bi bi-camera text-white fs-1"></i></div>
+            <button onclick="document.getElementById('pfp-f').click()" class="btn btn-outline-info w-100 mb-3">Foto Perfil</button>
+            <input type="file" id="pfp-f" hidden accept="image/*" onchange="preview(this)">
+            <input type="text" id="reg-n" class="input-wa" placeholder="Tu nombre...">
+            <button onclick="acceder()" class="btn btn-success w-100 fw-bold">ENTRAR</button>
         </div>
     </div>
 
     <div id="app-shell">
-        <header class="p-3 bg-dark d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center">
-                <div id="logo-place"><img src="https://via.placeholder.com/45" style="border-radius:50%; border:2px solid var(--neon)"></div>
-                <b class="ms-3">GRUPO EVA</b>
+        <header>
+            <i class="bi bi-arrow-left fs-4" onclick="location.reload()"></i>
+            <img id="g-logo" src="https://via.placeholder.com/40" style="width:40px;height:40px;border-radius:50%;margin-left:10px;">
+            <div class="header-info" onclick="alert('Info del grupo')">
+                <b>Eva x</b>
+                <span>48 personas en línea</span>
             </div>
-            <div id="boss-button-slot"></div>
+            <div id="boss-icon"></div>
+            <i class="bi bi-three-dots-vertical fs-4 ms-3"></i>
         </header>
 
-        <div class="live-header">
-            <div class="channel-box" onclick="zoomLive(1)"><div class="dot" id="d1"></div><img id="c1" src="https://via.placeholder.com/65" class="channel-img"></div>
-            <div class="channel-box" onclick="zoomLive(2)"><div class="dot" id="d2"></div><img id="c2" src="https://via.placeholder.com/65" class="channel-img"></div>
-            <div class="channel-box" onclick="zoomLive(3)"><div class="dot" id="d3"></div><img id="c3" src="https://via.placeholder.com/65" class="channel-img"></div>
+        <div class="live-bar">
+            <div class="ch-box" onclick="zoom(1)"><div class="status-dot" id="d1"></div><img id="c1" src="https://via.placeholder.com/60" class="ch-img"><br><small>Canal 1</small></div>
+            <div class="ch-box" onclick="zoom(2)"><div class="status-dot" id="d2"></div><img id="c2" src="https://via.placeholder.com/60" class="ch-img"><br><small>Canal 2</small></div>
+            <div class="ch-box" onclick="zoom(3)"><div class="status-dot" id="d3"></div><img id="c3" src="https://via.placeholder.com/60" class="ch-img"><br><small>Canal 3</small></div>
         </div>
 
-        <div class="chat-area" id="chat-box">
-            <div class="msg"><b>SISTEMA:</b> Bienvenido al chat.</div>
+        <div class="chat-container" id="box">
+            <div class="bubble in">¡Bienvenidos a Eva x! 👋</div>
         </div>
 
-        <div class="p-2 bg-dark d-flex gap-2">
-            <input type="text" id="msg-input" class="form-control bg-secondary text-white border-0" placeholder="Escribe...">
-            <button class="btn btn-success" onclick="sendMessage()"><i class="bi bi-send"></i></button>
+        <div class="wa-footer">
+            <i class="bi bi-emoji-smile fs-4 text-secondary"></i>
+            <div class="input-pill">
+                <input type="text" id="msg-i" placeholder="Mensaje">
+                <label><i class="bi bi-paperclip fs-4 text-secondary ms-2"></i><input type="file" hidden onchange="sendFile(this)"></label>
+                <i class="bi bi-camera-fill fs-4 text-secondary ms-2"></i>
+            </div>
+            <div class="btn btn-success rounded-circle" style="width:45px;height:45px;display:flex;align-items:center;justify-content:center;" onclick="send()">
+                <i class="bi bi-send-fill text-white"></i>
+            </div>
         </div>
     </div>
 
-    <div id="boss-ui">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="text-info">MANDO GAIA</h3>
-            <button class="btn btn-danger" onclick="document.getElementById('boss-ui').style.display='none'">CERRAR</button>
-        </div>
-
-        <div class="boss-card text-center">
-            <h5>CONTEO: <span id="counter" class="text-info">48</span> USUARIOS</h5>
+    <div id="boss-panel">
+        <div class="d-flex justify-content-between mb-4">
+            <h2 class="text-info">MANDO GAIA 🕹️</h2>
+            <button class="btn btn-danger" onclick="document.getElementById('boss-panel').style.display='none'">CERRAR</button>
         </div>
 
         <div class="boss-card">
-            <label class="mb-2">🎵 LANZAR MÚSICA GRUPAL</label>
-            <input type="file" class="form-control mb-3" accept="audio/*" onchange="playGlobalMusic(this)">
-            
-            <label class="mb-2">🖼️ CAMBIAR FONDO DEL CHAT</label>
-            <input type="file" class="form-control mb-3" accept="image/*" onchange="setChatBackground(this)">
-
-            <label class="mb-2">💠 CAMBIAR LOGO DEL GRUPO</label>
-            <input type="file" class="form-control" accept="image/*" onchange="setGroupLogo(this)">
+            <p>🎚️ CONTROL DE VOLUMEN MÚSICA</p>
+            <input type="range" class="vol-slider" min="0" max="1" step="0.1" value="0.5" oninput="changeVol(this.value)">
         </div>
 
         <div class="boss-card">
-            <p>BUSCADOR GAIA (FIJAR CANALES)</p>
-            <input type="text" id="s-name" class="input-custom" placeholder="Nombre de usuario...">
-            <div class="row g-2 mb-3">
-                <div class="col-4"><button class="btn btn-primary w-100 btn-sm" onclick="fijarCanal(1)">C1</button></div>
-                <div class="col-4"><button class="btn btn-primary w-100 btn-sm" onclick="fijarCanal(2)">C2</button></div>
-                <div class="col-4"><button class="btn btn-primary w-100 btn-sm" onclick="fijarCanal(3)">C3</button></div>
+            <p>🔍 BUSCADOR GAIA (FIJAR CANALES)</p>
+            <input type="text" id="s-val" class="input-wa" placeholder="Nombre de la persona...">
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary btn-sm w-100" onclick="fijar(1)">CANAL 1</button>
+                <button class="btn btn-primary btn-sm w-100" onclick="fijar(2)">CANAL 2</button>
+                <button class="btn btn-primary btn-sm w-100" onclick="fijar(3)">CANAL 3</button>
             </div>
-            <button class="btn btn-warning w-100 mb-2" onclick="alert('Usuario Bloqueado')">BLOQUEAR USUARIO</button>
-            <button class="btn btn-danger w-100" onclick="alert('Usuario Expulsado')">EXPULSAR DEL GRUPO</button>
+        </div>
+
+        <div class="boss-card">
+            <p>⚙️ AJUSTES GRUPALES</p>
+            <label class="btn btn-outline-light w-100 mb-2">🖼️ FONDO CHAT<input type="file" hidden onchange="setBg(this)"></label>
+            <label class="btn btn-outline-light w-100 mb-2">💠 LOGO GRUPO<input type="file" hidden onchange="setLogo(this)"></label>
+            <label class="btn btn-outline-warning w-100 mb-2">🎵 LANZAR MÚSICA<input type="file" hidden accept="audio/*" onchange="playM(this)"></label>
+            <button class="btn btn-danger w-100 mt-2" onclick="alert('Limpiando grupo...')">EXPULSAR USUARIOS</button>
         </div>
     </div>
 
     <script>
-        let currentAudio = null;
-
-        function previewImg(input, targetId) {
-            if (input.files && input.files[0]) {
-                const url = URL.createObjectURL(input.files[0]);
-                document.getElementById(targetId).innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;
+        let isBoss = false, audioH = null;
+        function preview(i){ if(i.files[0]){ document.getElementById('pfp-p').innerHTML=`<img src="${URL.createObjectURL(i.files[0])}" style="width:100%;height:100%;object-fit:cover;">`; }}
+        
+        function acceder(){
+            let n = document.getElementById('reg-n').value;
+            if(n === "# 20937A."){ 
+                isBoss = true; 
+                document.getElementById('boss-icon').innerHTML = '<i class="bi bi-shield-lock-fill fs-4 ms-3" onclick="document.getElementById(\'boss-panel\').style.display=\'block\'"></i>';
             }
+            document.getElementById('reg-screen').style.display='none';
+            document.getElementById('app-shell').classList.add('active');
         }
 
-        function validarEntrada() {
-            const name = document.getElementById("reg-name").value.trim();
-            if (name === "# 20937A.") {
-                document.getElementById("boss-button-slot").innerHTML = '<i class="bi bi-gear-fill fs-3 text-info" onclick="document.getElementById(\'boss-ui\').style.display=\'block\'"></i>';
-            }
-            document.getElementById("reg-screen").style.display = "none";
-            document.getElementById("app-shell").classList.add("active");
+        function send(){
+            let i=document.getElementById('msg-i'); if(!i.value)return;
+            document.getElementById('box').innerHTML += `<div class="bubble out">${i.value}</div>`;
+            i.value=""; document.getElementById('box').scrollTop = 99999;
         }
 
-        function sendMessage() {
-            const inp = document.getElementById("msg-input");
-            if (!inp.value) return;
-            const box = document.getElementById("chat-box");
-            box.innerHTML += `<div class="msg me"><b>Tú:</b> ${inp.value} <i class="bi bi-heart ms-2" onclick="this.classList.toggle('bi-heart-fill');this.classList.toggle('text-danger')"></i></div>`;
-            inp.value = ""; box.scrollTop = box.scrollHeight;
+        function sendFile(i){ if(i.files[0]){ let url=URL.createObjectURL(i.files[0]); document.getElementById('box').innerHTML += `<div class="bubble out"><img src="${url}" style="width:100%;border-radius:5px;"></div>`; }}
+        function setBg(i){ if(i.files[0]){ document.getElementById('box').style.backgroundImage=`url(${URL.createObjectURL(i.files[0])})`; }}
+        function setLogo(i){ if(i.files[0]){ document.getElementById('g-logo').src=URL.createObjectURL(i.files[0]); }}
+        
+        function playM(i){ if(i.files[0]){ audioH = new Audio(URL.createObjectURL(i.files[0])); audioH.play(); alert("Música lanzada."); }}
+        function changeVol(v){ if(audioH) audioH.volume = v; }
+
+        function fijar(c){
+            let v = document.getElementById('s-val').value; if(!v) return;
+            document.getElementById('c'+c).src = "https://via.placeholder.com/60/075e54/ffffff?text="+v;
+            document.getElementById('d'+c).classList.add('on');
+            alert(v + " fijado.");
         }
 
-        // FUNCIONES DE JEFE
-        function playGlobalMusic(input) {
-            if (input.files[0]) {
-                if (currentAudio) currentAudio.pause();
-                currentAudio = new Audio(URL.createObjectURL(input.files[0]));
-                currentAudio.play();
-                alert("Música activa para el grupo.");
-            }
-        }
-
-        function setChatBackground(input) {
-            if (input.files[0]) {
-                const url = URL.createObjectURL(input.files[0]);
-                document.getElementById("chat-box").style.backgroundImage = `url(${url})`;
-                alert("Fondo del chat actualizado.");
-            }
-        }
-
-        function setGroupLogo(input) {
-            if (input.files[0]) {
-                const url = URL.createObjectURL(input.files[0]);
-                document.getElementById("logo-place").innerHTML = `<img src="${url}" style="width:45px;height:45px;border-radius:50%;border:2px solid var(--neon)">`;
-                alert("Logo actualizado.");
-            }
-        }
-
-        function fijarCanal(c) {
-            const name = document.getElementById("s-name").value;
-            if (!name) return alert("Escribe un nombre");
-            document.getElementById('c' + c).src = "https://via.placeholder.com/65/00ffcc/000?text=" + name;
-            document.getElementById('d' + c).classList.add('online');
-            alert(name + " fijado en Canal " + c);
-        }
-
-        function zoomLive(c) {
-            const src = document.getElementById('c' + c).src;
-            const overlay = document.createElement('div');
-            overlay.style = "position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200000;display:flex;flex-direction:column;align-items:center;justify-content:center;";
-            overlay.innerHTML = `<img src="${src}" style="width:85%; border:3px solid var(--neon); border-radius:20px;"><button class="btn btn-light mt-4" onclick="this.parentElement.remove()">VOLVER</button>`;
-            document.body.appendChild(overlay);
+        function zoom(c){
+            let src = document.getElementById('c'+c).src;
+            let o = document.createElement('div');
+            o.style = "position:fixed;inset:0;background:#000;z-index:999999;display:flex;align-items:center;justify-content:center;flex-direction:column;";
+            o.innerHTML = `<img src="${src}" style="width:80%;border-radius:20px;"><button class="btn btn-success mt-4" onclick="this.parentElement.remove()">VOLVER</button>`;
+            document.body.appendChild(o);
         }
     </script>
 </body>
