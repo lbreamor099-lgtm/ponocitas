@@ -3,35 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>EVA X PRO - SISTEMA PRIVADO</title>
+    <title>EVA X PRO - ELITE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        :root { --wa-dark: #0b141a; --wa-header: #111b21; --wa-msg: #202c33; --neon: #00ffcc; }
-        body, html { margin: 0; padding: 0; background: var(--wa-dark); color: white; height: 100dvh; width: 100vw; font-family: sans-serif; overflow: hidden; }
+        :root { --wa-dark: #0b141a; --wa-header: #111b21; --neon: #00ffcc; }
+        body, html { margin: 0; padding: 0; background: var(--wa-dark); color: white; height: 100dvh; width: 100vw; overflow: hidden; font-family: sans-serif; }
         
         /* REGISTRO */
-        #reg-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .reg-card { background: var(--wa-header); padding: 25px; border-radius: 25px; width: 95%; max-width: 400px; border: 1px solid var(--neon); text-align: center; }
-        .input-custom { width: 100%; padding: 12px; border-radius: 10px; border: none; background: #2a3942; color: white; margin-bottom: 10px; }
+        #reg-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .reg-card { background: var(--wa-header); padding: 30px; border-radius: 25px; width: 90%; max-width: 400px; border: 1px solid var(--neon); text-align: center; }
+        .input-custom { width: 100%; padding: 12px; border-radius: 10px; border: none; background: #2a3942; color: white; margin-bottom: 15px; }
 
-        /* APP */
+        /* APP LAYOUT */
         #app-shell { display: none; height: 100dvh; flex-direction: column; }
         #app-shell.active { display: flex; }
+        
+        /* CANALES LIVE */
         .live-header { display: flex; justify-content: space-around; background: var(--wa-header); padding: 10px; border-bottom: 1px solid #222e35; }
-        .channel-box { width: 80px; text-align: center; position: relative; }
+        .channel-box { width: 80px; text-align: center; position: relative; cursor: pointer; }
         .channel-img { width: 65px; height: 65px; border-radius: 15px; border: 2px solid #333; object-fit: cover; }
-        .dot { position: absolute; top: 5px; right: 12px; width: 10px; height: 10px; background: #333; border-radius: 50%; border: 1px solid white; }
-        .dot.online { background: #00ff00; box-shadow: 0 0 5px #00ff00; }
+        .dot { position: absolute; top: 5px; right: 12px; width: 12px; height: 12px; background: #444; border-radius: 50%; border: 2px solid var(--wa-header); }
+        .dot.online { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
 
-        /* CHAT */
+        /* CHAT WHATSAPP */
         .chat-area { flex: 1; overflow-y: auto; padding: 15px; background-size: cover; background-position: center; display: flex; flex-direction: column; }
-        .msg { max-width: 80%; padding: 10px; border-radius: 12px; margin-bottom: 10px; background: var(--wa-msg); align-self: flex-start; }
-        .msg.me { background: #005c4b; align-self: flex-end; }
+        .msg { max-width: 85%; padding: 10px; border-radius: 12px; margin-bottom: 10px; background: #202c33; position: relative; }
+        .msg.me { align-self: flex-end; background: #005c4b; }
 
-        /* PANEL JEFE */
-        #boss-ui { position: fixed; inset: 0; background: #000; z-index: 100000; display: none; padding: 20px; overflow-y: auto; }
-        .boss-card { background: #111; border: 1px solid var(--neon); padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+        /* MANDO GAIA - SOLO JEFE */
+        #boss-ui { position: fixed; inset: 0; background: #000; z-index: 100000; display: none; padding: 25px; overflow-y: auto; }
+        .boss-card { background: #1a1a1a; border: 1px solid var(--neon); padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+        .btn-boss { width: 100%; padding: 15px; border-radius: 10px; margin-bottom: 10px; font-weight: bold; border: 1px solid var(--neon); background: transparent; color: white; }
     </style>
 </head>
 <body>
@@ -39,97 +42,142 @@
     <div id="reg-screen">
         <div class="reg-card">
             <h2 style="color:var(--neon)">EVA X PRO</h2>
-            <div id="pfp-prev" style="width:80px; height:80px; border-radius:50%; border:2px dashed var(--neon); margin:15px auto; overflow:hidden; display:flex; align-items:center; justify-content:center;"><i class="bi bi-camera"></i></div>
-            <button onclick="document.getElementById('pfp-file').click()" class="btn btn-sm btn-outline-info mb-3">Foto de Perfil</button>
-            <input type="file" id="pfp-file" hidden accept="image/*" onchange="preview(this)">
-            <input type="text" id="reg-name" class="input-custom" placeholder="Nombre">
-            <button onclick="acceso()" class="btn btn-success w-100 fw-bold">ENTRAR</button>
+            <div id="pfp-preview" style="width:90px; height:90px; border-radius:50%; border:2px dashed var(--neon); margin:20px auto; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                <i class="bi bi-person-bounding-box fs-1"></i>
+            </div>
+            <button onclick="document.getElementById('pfp-input').click()" class="btn btn-outline-info w-100 mb-3">FOTO DE PERFIL</button>
+            <input type="file" id="pfp-input" hidden accept="image/*" onchange="previewImg(this, 'pfp-preview')">
+            <input type="text" id="reg-name" class="input-custom" placeholder="Nombre y Apellido">
+            <button onclick="validarEntrada()" class="btn btn-success w-100 py-3 fw-bold">ENTRAR AL SISTEMA</button>
         </div>
     </div>
 
     <div id="app-shell">
-        <header class="p-3 bg-dark d-flex align-items-center">
-            <div id="group-logo-cont"><img src="https://via.placeholder.com/40" style="border-radius:50%"></div>
-            <div class="ms-3"><b>SALA PRIVADA</b></div>
-            <div id="boss-trigger-cont" class="ms-auto"></div>
+        <header class="p-3 bg-dark d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div id="logo-place"><img src="https://via.placeholder.com/45" style="border-radius:50%; border:2px solid var(--neon)"></div>
+                <b class="ms-3">GRUPO EVA</b>
+            </div>
+            <div id="boss-button-slot"></div>
         </header>
 
         <div class="live-header">
-            <div class="channel-box"><div class="dot" id="d1"></div><img id="c1" src="https://via.placeholder.com/65" class="channel-img"></div>
-            <div class="channel-box"><div class="dot" id="d2"></div><img id="c2" src="https://via.placeholder.com/65" class="channel-img"></div>
-            <div class="channel-box"><div class="dot" id="d3"></div><img id="c3" src="https://via.placeholder.com/65" class="channel-img"></div>
+            <div class="channel-box" onclick="zoomLive(1)"><div class="dot" id="d1"></div><img id="c1" src="https://via.placeholder.com/65" class="channel-img"></div>
+            <div class="channel-box" onclick="zoomLive(2)"><div class="dot" id="d2"></div><img id="c2" src="https://via.placeholder.com/65" class="channel-img"></div>
+            <div class="channel-box" onclick="zoomLive(3)"><div class="dot" id="d3"></div><img id="c3" src="https://via.placeholder.com/65" class="channel-img"></div>
         </div>
 
-        <div class="chat-area" id="box"></div>
+        <div class="chat-area" id="chat-box">
+            <div class="msg"><b>SISTEMA:</b> Bienvenido al chat.</div>
+        </div>
 
         <div class="p-2 bg-dark d-flex gap-2">
-            <input type="text" id="min" class="form-control bg-secondary text-white border-0" placeholder="Mensaje...">
-            <button class="btn btn-success" onclick="env()"><i class="bi bi-send"></i></button>
+            <input type="text" id="msg-input" class="form-control bg-secondary text-white border-0" placeholder="Escribe...">
+            <button class="btn btn-success" onclick="sendMessage()"><i class="bi bi-send"></i></button>
         </div>
     </div>
 
     <div id="boss-ui">
-        <div class="d-flex justify-content-between"><h3>MANDO SUPREMO</h3><button class="btn btn-danger" onclick="document.getElementById('boss-ui').style.display='none'">X</button></div>
-        <div class="boss-card mt-3"><h5>USUARIOS EN GRUPO: <span id="u-count" class="text-info">1</span></h5></div>
-        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="text-info">MANDO GAIA</h3>
+            <button class="btn btn-danger" onclick="document.getElementById('boss-ui').style.display='none'">CERRAR</button>
+        </div>
+
+        <div class="boss-card text-center">
+            <h5>CONTEO: <span id="counter" class="text-info">48</span> USUARIOS</h5>
+        </div>
+
         <div class="boss-card">
-            <p>CAMBIAR FONDO DEL GRUPO</p>
-            <input type="file" class="form-control mb-2" onchange="setChatBg(this)">
-            <p>SUBIR MÚSICA GRUPAL</p>
-            <input type="file" class="form-control" accept="audio/*" onchange="playMusic(this)">
+            <label class="mb-2">🎵 LANZAR MÚSICA GRUPAL</label>
+            <input type="file" class="form-control mb-3" accept="audio/*" onchange="playGlobalMusic(this)">
+            
+            <label class="mb-2">🖼️ CAMBIAR FONDO DEL CHAT</label>
+            <input type="file" class="form-control mb-3" accept="image/*" onchange="setChatBackground(this)">
+
+            <label class="mb-2">💠 CAMBIAR LOGO DEL GRUPO</label>
+            <input type="file" class="form-control" accept="image/*" onchange="setGroupLogo(this)">
         </div>
 
         <div class="boss-card">
             <p>BUSCADOR GAIA (FIJAR CANALES)</p>
-            <input type="text" id="s-user" class="input-custom" placeholder="Nombre de usuario">
-            <div class="d-flex gap-2">
-                <button class="btn btn-primary btn-sm" onclick="fijar(1)">CANAL 1</button>
-                <button class="btn btn-primary btn-sm" onclick="fijar(2)">CANAL 2</button>
-                <button class="btn btn-primary btn-sm" onclick="fijar(3)">CANAL 3</button>
+            <input type="text" id="s-name" class="input-custom" placeholder="Nombre de usuario...">
+            <div class="row g-2 mb-3">
+                <div class="col-4"><button class="btn btn-primary w-100 btn-sm" onclick="fijarCanal(1)">C1</button></div>
+                <div class="col-4"><button class="btn btn-primary w-100 btn-sm" onclick="fijarCanal(2)">C2</button></div>
+                <div class="col-4"><button class="btn btn-primary w-100 btn-sm" onclick="fijarCanal(3)">C3</button></div>
             </div>
-            <div class="d-flex gap-2 mt-3">
-                <button class="btn btn-warning btn-sm w-50" onclick="alert('Usuario Bloqueado')">BLOQUEAR</button>
-                <button class="btn btn-danger btn-sm w-50" onclick="alert('Usuario Expulsado')">EXPULSAR</button>
-            </div>
+            <button class="btn btn-warning w-100 mb-2" onclick="alert('Usuario Bloqueado')">BLOQUEAR USUARIO</button>
+            <button class="btn btn-danger w-100" onclick="alert('Usuario Expulsado')">EXPULSAR DEL GRUPO</button>
         </div>
     </div>
 
     <script>
-        let isBoss = false;
-        function preview(i){ if(i.files[0]){ let r=new FileReader(); r.onload=e=>document.getElementById('pfp-prev').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`; r.readAsDataURL(i.files[0]);}}
-        
-        function acceso(){
-            let n = document.getElementById('reg-name').value;
-            if(n === "# 20937A."){ 
-                isBoss = true; 
-                document.getElementById('boss-trigger-cont').innerHTML = '<i class="bi bi-gear-fill fs-4" onclick="document.getElementById(\'boss-ui\').style.display=\'block\'"></i>';
+        let currentAudio = null;
+
+        function previewImg(input, targetId) {
+            if (input.files && input.files[0]) {
+                const url = URL.createObjectURL(input.files[0]);
+                document.getElementById(targetId).innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;
             }
-            document.getElementById('reg-screen').style.display='none';
-            document.getElementById('app-shell').classList.add('active');
-            updateCount();
         }
 
-        function env(){
-            let i=document.getElementById('min'); if(!i.value)return;
-            document.getElementById('box').innerHTML += `<div class="msg me">${i.value} <i class="bi bi-heart" onclick="this.classList.toggle('bi-heart-fill');this.classList.toggle('text-danger')"></i></div>`;
-            i.value=""; document.getElementById('box').scrollTop = 99999;
+        function validarEntrada() {
+            const name = document.getElementById("reg-name").value.trim();
+            if (name === "# 20937A.") {
+                document.getElementById("boss-button-slot").innerHTML = '<i class="bi bi-gear-fill fs-3 text-info" onclick="document.getElementById(\'boss-ui\').style.display=\'block\'"></i>';
+            }
+            document.getElementById("reg-screen").style.display = "none";
+            document.getElementById("app-shell").classList.add("active");
         }
 
-        function setChatBg(i){ if(i.files[0]){ let r=new FileReader(); r.onload=e=>document.getElementById('box').style.backgroundImage=`url(${e.target.result})`; r.readAsDataURL(i.files[0]);}}
-        
-        function playMusic(i){ if(i.files[0]){ let a=new Audio(URL.createObjectURL(i.files[0])); a.play(); alert("Música sonando para el grupo"); }}
-
-        function fijar(c){
-            let u = document.getElementById('s-user').value;
-            if(!u) return alert("Escribe un nombre");
-            document.getElementById('c'+c).src = "https://via.placeholder.com/65/00ffcc/000?text="+u;
-            document.getElementById('d'+c).classList.add('online');
-            alert(u + " fijado en canal " + c);
+        function sendMessage() {
+            const inp = document.getElementById("msg-input");
+            if (!inp.value) return;
+            const box = document.getElementById("chat-box");
+            box.innerHTML += `<div class="msg me"><b>Tú:</b> ${inp.value} <i class="bi bi-heart ms-2" onclick="this.classList.toggle('bi-heart-fill');this.classList.toggle('text-danger')"></i></div>`;
+            inp.value = ""; box.scrollTop = box.scrollHeight;
         }
 
-        function updateCount(){
-            let c = Math.floor(Math.random() * (50 - 10) + 10);
-            document.getElementById('u-count').innerText = isBoss ? c : "";
+        // FUNCIONES DE JEFE
+        function playGlobalMusic(input) {
+            if (input.files[0]) {
+                if (currentAudio) currentAudio.pause();
+                currentAudio = new Audio(URL.createObjectURL(input.files[0]));
+                currentAudio.play();
+                alert("Música activa para el grupo.");
+            }
+        }
+
+        function setChatBackground(input) {
+            if (input.files[0]) {
+                const url = URL.createObjectURL(input.files[0]);
+                document.getElementById("chat-box").style.backgroundImage = `url(${url})`;
+                alert("Fondo del chat actualizado.");
+            }
+        }
+
+        function setGroupLogo(input) {
+            if (input.files[0]) {
+                const url = URL.createObjectURL(input.files[0]);
+                document.getElementById("logo-place").innerHTML = `<img src="${url}" style="width:45px;height:45px;border-radius:50%;border:2px solid var(--neon)">`;
+                alert("Logo actualizado.");
+            }
+        }
+
+        function fijarCanal(c) {
+            const name = document.getElementById("s-name").value;
+            if (!name) return alert("Escribe un nombre");
+            document.getElementById('c' + c).src = "https://via.placeholder.com/65/00ffcc/000?text=" + name;
+            document.getElementById('d' + c).classList.add('online');
+            alert(name + " fijado en Canal " + c);
+        }
+
+        function zoomLive(c) {
+            const src = document.getElementById('c' + c).src;
+            const overlay = document.createElement('div');
+            overlay.style = "position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200000;display:flex;flex-direction:column;align-items:center;justify-content:center;";
+            overlay.innerHTML = `<img src="${src}" style="width:85%; border:3px solid var(--neon); border-radius:20px;"><button class="btn btn-light mt-4" onclick="this.parentElement.remove()">VOLVER</button>`;
+            document.body.appendChild(overlay);
         }
     </script>
 </body>
