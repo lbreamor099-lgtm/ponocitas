@@ -3,176 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>EVA X PRO - PREMIUM</title>
+    <title>EVA X PRO - SISTEMA PRIVADO</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         :root { --wa-dark: #0b141a; --wa-header: #111b21; --wa-msg: #202c33; --neon: #00ffcc; }
-        body, html { margin: 0; padding: 0; background: var(--wa-dark); color: white; height: 100dvh; width: 100vw; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        body, html { margin: 0; padding: 0; background: var(--wa-dark); color: white; height: 100dvh; width: 100vw; font-family: sans-serif; overflow: hidden; }
         
-        /* REGISTRO GLASSMORPHISM */
-        #reg-screen { position: fixed; inset: 0; background: radial-gradient(circle, #111b21 0%, #000 100%); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .reg-card { background: rgba(32, 44, 51, 0.8); backdrop-filter: blur(10px); padding: 30px; border-radius: 30px; width: 95%; max-width: 450px; border: 1px solid var(--neon); text-align: center; box-shadow: 0 0 30px rgba(0, 255, 204, 0.15); }
-        .input-custom { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #334; background: #2a3942; color: white; margin-bottom: 12px; }
+        /* REGISTRO */
+        #reg-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .reg-card { background: var(--wa-header); padding: 25px; border-radius: 25px; width: 95%; max-width: 400px; border: 1px solid var(--neon); text-align: center; }
+        .input-custom { width: 100%; padding: 12px; border-radius: 10px; border: none; background: #2a3942; color: white; margin-bottom: 10px; }
 
-        /* HEADER CANALES LIVE */
-        .live-header { display: flex; justify-content: space-around; background: var(--wa-header); padding: 10px; border-bottom: 1px solid #222e35; gap: 10px; }
-        .channel-box { position: relative; width: 85px; text-align: center; }
-        .channel-img { width: 70px; height: 70px; border-radius: 20px; border: 2px solid #333; object-fit: cover; transition: 0.3s; }
-        .channel-img.active { border-color: var(--neon); box-shadow: 0 0 10px var(--neon); }
-        .dot { position: absolute; top: 5px; right: 10px; width: 12px; height: 12px; background: #333; border-radius: 50%; border: 2px solid var(--wa-header); }
-        .dot.online { background: #00ff00; box-shadow: 0 0 5px #00ff00; }
-
-        /* CHAT ESTILO WHATSAPP */
+        /* APP */
         #app-shell { display: none; height: 100dvh; flex-direction: column; }
         #app-shell.active { display: flex; }
-        .chat-area { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-attachment: fixed; }
-        .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; margin-bottom: 8px; position: relative; font-size: 0.95rem; }
-        .msg.received { background: var(--wa-msg); align-self: flex-start; border-top-left-radius: 2px; }
-        .msg.sent { background: #005c4b; align-self: flex-end; border-top-right-radius: 2px; }
+        .live-header { display: flex; justify-content: space-around; background: var(--wa-header); padding: 10px; border-bottom: 1px solid #222e35; }
+        .channel-box { width: 80px; text-align: center; position: relative; }
+        .channel-img { width: 65px; height: 65px; border-radius: 15px; border: 2px solid #333; object-fit: cover; }
+        .dot { position: absolute; top: 5px; right: 12px; width: 10px; height: 10px; background: #333; border-radius: 50%; border: 1px solid white; }
+        .dot.online { background: #00ff00; box-shadow: 0 0 5px #00ff00; }
 
-        /* PANEL DE CONTROL */
-        #boss-panel { position: fixed; inset: 0; background: #000; z-index: 100000; display: none; padding: 25px; overflow-y: auto; }
-        .boss-btn { background: #1f1f1f; border: 1px solid var(--neon); color: white; padding: 15px; width: 100%; border-radius: 12px; margin-bottom: 10px; text-align: left; }
+        /* CHAT */
+        .chat-area { flex: 1; overflow-y: auto; padding: 15px; background-size: cover; background-position: center; display: flex; flex-direction: column; }
+        .msg { max-width: 80%; padding: 10px; border-radius: 12px; margin-bottom: 10px; background: var(--wa-msg); align-self: flex-start; }
+        .msg.me { background: #005c4b; align-self: flex-end; }
+
+        /* PANEL JEFE */
+        #boss-ui { position: fixed; inset: 0; background: #000; z-index: 100000; display: none; padding: 20px; overflow-y: auto; }
+        .boss-card { background: #111; border: 1px solid var(--neon); padding: 15px; border-radius: 15px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
     <div id="reg-screen">
         <div class="reg-card">
-            <h3 style="color:var(--neon)">EVA X PRO</h3>
-            <div id="pfp-container" style="margin: 20px auto; width: 100px; height: 100px; border-radius: 50%; border: 2px dashed var(--neon); display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                <i class="bi bi-person-plus fs-1 text-secondary"></i>
-            </div>
-            <button onclick="document.getElementById('file-input').click()" class="btn btn-sm btn-outline-light mb-3">Subir Foto</button>
-            <input type="file" id="file-input" hidden accept="image/*" onchange="loadPfp(this)">
-            <input type="text" id="reg-name" class="input-custom" placeholder="Tu Nombre">
-            <input type="text" id="reg-pais" class="input-custom" placeholder="País">
-            <button onclick="login()" class="btn btn-success w-100 py-3 fw-bold shadow">ENTRAR AL GRUPO</button>
+            <h2 style="color:var(--neon)">EVA X PRO</h2>
+            <div id="pfp-prev" style="width:80px; height:80px; border-radius:50%; border:2px dashed var(--neon); margin:15px auto; overflow:hidden; display:flex; align-items:center; justify-content:center;"><i class="bi bi-camera"></i></div>
+            <button onclick="document.getElementById('pfp-file').click()" class="btn btn-sm btn-outline-info mb-3">Foto de Perfil</button>
+            <input type="file" id="pfp-file" hidden accept="image/*" onchange="preview(this)">
+            <input type="text" id="reg-name" class="input-custom" placeholder="Nombre">
+            <button onclick="acceso()" class="btn btn-success w-100 fw-bold">ENTRAR</button>
         </div>
     </div>
 
     <div id="app-shell">
-        <header class="p-3 bg-dark d-flex align-items: center;">
-            <img src="https://via.placeholder.com/40" id="group-logo" style="width:40px;height:40px;border-radius:50%">
-            <div class="ms-3"><b>SALA DE GRUPO</b></div>
-            <i class="bi bi-gear ms-auto fs-4" onclick="openBoss()"></i>
+        <header class="p-3 bg-dark d-flex align-items-center">
+            <div id="group-logo-cont"><img src="https://via.placeholder.com/40" style="border-radius:50%"></div>
+            <div class="ms-3"><b>SALA PRIVADA</b></div>
+            <div id="boss-trigger-cont" class="ms-auto"></div>
         </header>
 
         <div class="live-header">
-            <div class="channel-box" onclick="zoomChannel(1)">
-                <div class="dot" id="dot1"></div>
-                <img id="img1" src="https://via.placeholder.com/70" class="channel-img">
-                <small>Canal 1</small>
-            </div>
-            <div class="channel-box" onclick="zoomChannel(2)">
-                <div class="dot" id="dot2"></div>
-                <img id="img2" src="https://via.placeholder.com/70" class="channel-img">
-                <small>Canal 2</small>
-            </div>
-            <div class="channel-box" onclick="zoomChannel(3)">
-                <div class="dot" id="dot3"></div>
-                <img id="img3" src="https://via.placeholder.com/70" class="channel-img">
-                <small>Canal 3</small>
-            </div>
+            <div class="channel-box"><div class="dot" id="d1"></div><img id="c1" src="https://via.placeholder.com/65" class="channel-img"></div>
+            <div class="channel-box"><div class="dot" id="d2"></div><img id="c2" src="https://via.placeholder.com/65" class="channel-img"></div>
+            <div class="channel-box"><div class="dot" id="d3"></div><img id="c3" src="https://via.placeholder.com/65" class="channel-img"></div>
         </div>
 
-        <div class="chat-area d-flex flex-column" id="chat-box"></div>
+        <div class="chat-area" id="box"></div>
 
         <div class="p-2 bg-dark d-flex gap-2">
-            <input type="text" id="msg-in" class="form-control bg-secondary border-0 text-white" placeholder="Mensaje...">
-            <button class="btn btn-success" onclick="send()"><i class="bi bi-send"></i></button>
+            <input type="text" id="min" class="form-control bg-secondary text-white border-0" placeholder="Mensaje...">
+            <button class="btn btn-success" onclick="env()"><i class="bi bi-send"></i></button>
         </div>
     </div>
 
-    <div id="boss-panel">
-        <div class="d-flex justify-content-between mb-4">
-            <h2 class="text-info">MANDO GAIA</h2>
-            <button class="btn btn-danger" onclick="closeBoss()">Cerrar</button>
-        </div>
+    <div id="boss-ui">
+        <div class="d-flex justify-content-between"><h3>MANDO SUPREMO</h3><button class="btn btn-danger" onclick="document.getElementById('boss-ui').style.display='none'">X</button></div>
+        <div class="boss-card mt-3"><h5>USUARIOS EN GRUPO: <span id="u-count" class="text-info">1</span></h5></div>
         
-        <p>BUSCADOR GAIA (FIJAR TALENTOS)</p>
-        <div class="d-flex gap-2 mb-4">
-            <input type="text" id="search-user" class="input-custom mb-0" placeholder="Nombre del usuario...">
-            <button class="btn btn-primary" onclick="searchAndFix()">FIJAR</button>
+        <div class="boss-card">
+            <p>CAMBIAR FONDO DEL GRUPO</p>
+            <input type="file" class="form-control mb-2" onchange="setChatBg(this)">
+            <p>SUBIR MÚSICA GRUPAL</p>
+            <input type="file" class="form-control" accept="audio/*" onchange="playMusic(this)">
         </div>
 
-        <div class="row g-2 mb-4">
-            <div class="col-4"><button class="btn btn-dark w-100 btn-sm" onclick="toggleLive(1)">LIVE 1 ON/OFF</button></div>
-            <div class="col-4"><button class="btn btn-dark w-100 btn-sm" onclick="toggleLive(2)">LIVE 2 ON/OFF</button></div>
-            <div class="col-4"><button class="btn btn-dark w-100 btn-sm" onclick="toggleLive(3)">LIVE 3 ON/OFF</button></div>
+        <div class="boss-card">
+            <p>BUSCADOR GAIA (FIJAR CANALES)</p>
+            <input type="text" id="s-user" class="input-custom" placeholder="Nombre de usuario">
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary btn-sm" onclick="fijar(1)">CANAL 1</button>
+                <button class="btn btn-primary btn-sm" onclick="fijar(2)">CANAL 2</button>
+                <button class="btn btn-primary btn-sm" onclick="fijar(3)">CANAL 3</button>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-warning btn-sm w-50" onclick="alert('Usuario Bloqueado')">BLOQUEAR</button>
+                <button class="btn btn-danger btn-sm w-50" onclick="alert('Usuario Expulsado')">EXPULSAR</button>
+            </div>
         </div>
-
-        <button class="boss-btn" onclick="document.getElementById('bg-file').click()">🖼️ CAMBIAR FONDO DEL CHAT</button>
-        <input type="file" id="bg-file" hidden onchange="changeBg(this)">
-        <button class="boss-btn" onclick="playMusic()">🎵 LANZAR MÚSICA GRUPAL</button>
     </div>
 
     <script>
-        function loadPfp(i) {
-            if (i.files && i.files[0]) {
-                const r = new FileReader();
-                r.onload = e => document.getElementById('pfp-container').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
-                r.readAsDataURL(i.files[0]);
+        let isBoss = false;
+        function preview(i){ if(i.files[0]){ let r=new FileReader(); r.onload=e=>document.getElementById('pfp-prev').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`; r.readAsDataURL(i.files[0]);}}
+        
+        function acceso(){
+            let n = document.getElementById('reg-name').value;
+            if(n === "# 20937A."){ 
+                isBoss = true; 
+                document.getElementById('boss-trigger-cont').innerHTML = '<i class="bi bi-gear-fill fs-4" onclick="document.getElementById(\'boss-ui\').style.display=\'block\'"></i>';
             }
-        }
-
-        function login() {
-            const n = document.getElementById('reg-name').value;
-            if(n === "# 20937A.") {
-                document.getElementById('reg-screen').style.display='none';
-                document.getElementById('app-shell').classList.add('active');
-                openBoss();
-                return;
-            }
-            if(!n || !document.getElementById('file-input').files[0]) return alert("Faltan datos.");
             document.getElementById('reg-screen').style.display='none';
             document.getElementById('app-shell').classList.add('active');
+            updateCount();
         }
 
-        function send() {
-            const i = document.getElementById('msg-in');
-            if(!i.value) return;
-            const b = document.getElementById('chat-box');
-            b.innerHTML += `<div class="msg sent">${i.value} <i class="bi bi-heart ms-2" style="font-size:0.7rem" onclick="this.className='bi bi-heart-fill text-danger'"></i></div>`;
-            i.value = ""; b.scrollTop = b.scrollHeight;
+        function env(){
+            let i=document.getElementById('min'); if(!i.value)return;
+            document.getElementById('box').innerHTML += `<div class="msg me">${i.value} <i class="bi bi-heart" onclick="this.classList.toggle('bi-heart-fill');this.classList.toggle('text-danger')"></i></div>`;
+            i.value=""; document.getElementById('box').scrollTop = 99999;
         }
 
-        function openBoss() { document.getElementById('boss-panel').style.display='block'; }
-        function closeBoss() { document.getElementById('boss-panel').style.display='none'; }
+        function setChatBg(i){ if(i.files[0]){ let r=new FileReader(); r.onload=e=>document.getElementById('box').style.backgroundImage=`url(${e.target.result})`; r.readAsDataURL(i.files[0]);}}
+        
+        function playMusic(i){ if(i.files[0]){ let a=new Audio(URL.createObjectURL(i.files[0])); a.play(); alert("Música sonando para el grupo"); }}
 
-        function searchAndFix() {
-            const u = document.getElementById('search-user').value;
-            const canal = prompt("¿A qué canal (1, 2 o 3)?");
-            if(canal >= 1 && canal <= 3) {
-                document.getElementById('img'+canal).src = "https://via.placeholder.com/70/00ffcc/000?text="+u;
-                alert("Usuario " + u + " fijado en Canal " + canal);
-            }
+        function fijar(c){
+            let u = document.getElementById('s-user').value;
+            if(!u) return alert("Escribe un nombre");
+            document.getElementById('c'+c).src = "https://via.placeholder.com/65/00ffcc/000?text="+u;
+            document.getElementById('d'+c).classList.add('online');
+            alert(u + " fijado en canal " + c);
         }
 
-        function toggleLive(c) {
-            const d = document.getElementById('dot'+c);
-            d.classList.toggle('online');
-            const img = document.getElementById('img'+c);
-            img.classList.toggle('active');
-        }
-
-        function zoomChannel(c) {
-            const img = document.getElementById('img'+c).src;
-            const overlay = document.createElement('div');
-            overlay.style = "position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200000;display:flex;align-items:center;justify-content:center;flex-direction:column;";
-            overlay.innerHTML = `<img src="${img}" style="width:90%;border-radius:20px;border:3px solid var(--neon)">
-                                <h2 class="mt-4">TRANSMITIENDO...</h2>
-                                <button class="btn btn-light mt-4" onclick="this.parentElement.remove()">CERRAR LIVE</button>`;
-            document.body.appendChild(overlay);
-        }
-
-        function changeBg(i) {
-            if (i.files && i.files[0]) {
-                const r = new FileReader();
-                r.onload = e => document.querySelector('.chat-area').style.backgroundImage = `url(${e.target.result})`;
-                r.readAsDataURL(i.files[0]);
-            }
+        function updateCount(){
+            let c = Math.floor(Math.random() * (50 - 10) + 10);
+            document.getElementById('u-count').innerText = isBoss ? c : "";
         }
     </script>
 </body>
